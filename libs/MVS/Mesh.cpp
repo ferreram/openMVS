@@ -3565,6 +3565,8 @@ void Mesh::RemoveFaces(FaceIdxArr& facesRemove, bool bUpdateLists)
 			faces.RemoveAt(idxF);
 			if (!faceTexcoords.empty())
 				faceTexcoords.RemoveAt(idxF * 3, 3);
+			if (!faceTexindices.empty())
+				faceTexindices.RemoveAt(idxF);
 			idxLast = idxF;
 		}
 	} else {
@@ -3599,6 +3601,8 @@ void Mesh::RemoveFaces(FaceIdxArr& facesRemove, bool bUpdateLists)
 			faces.RemoveAt(idxF);
 			if (!faceTexcoords.empty())
 				faceTexcoords.RemoveAt(idxF * 3, 3);
+			if (!faceTexindices.empty())
+				faceTexindices.RemoveAt(idxF);
 			idxLast = idxF;
 		}
 	}
