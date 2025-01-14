@@ -2269,8 +2269,6 @@ void MeshTexture::GenerateTexture(bool bGlobalSeamLeveling, bool bLocalSeamLevel
 			}
 		}
 
-		Mesh::FaceIdxArr facesToRemove;
-
 		#ifdef TEXOPT_USE_OPENMP
 		#pragma omp parallel for schedule(dynamic)
 		for (int_t i=0; i<(int_t)placedRects.size(); ++i) {
@@ -2296,15 +2294,6 @@ void MeshTexture::GenerateTexture(bool bGlobalSeamLeveling, bool bLocalSeamLevel
 						x = 1; y = 0;
 					}
 					patch.copyTo(texturesDiffuse[idxTexture](rect));
-				}
-				else if (bRemoveUnseenFaces)
-				{
-					auto it = texturePatch.faces.begin();
-					while (it != texturePatch.faces.end())
-					{
-						facesToRemove.push_back(*it);
-						++it;
-					}
 				}
 				// compute final texture coordinates
 				const TexCoord offset(rect.tl());
@@ -2333,9 +2322,10 @@ void MeshTexture::GenerateTexture(bool bGlobalSeamLeveling, bool bLocalSeamLevel
 			}
 		}
 
-		if (bRemoveUnseenFaces)
-		{
-			scene.mesh.RemoveFaces(facesToRemove);
+		// Remove unseen faces
+		if (bRemoveUnseenFaces) {
+			scene.mesh.RemoveFaces(texturePatches.back().faces, true);
+			scene.mesh.RemoveUnreferencedVertices(true);
 		}
 	}
 }
