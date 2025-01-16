@@ -1526,7 +1526,7 @@ void MeshTexture::GlobalSeamLeveling()
 	}
 
 	// fill Tikhonov's Gamma matrix (regularization constraints)
-	const float lambda(0.1f);
+	const float lambda(0.03f);
 	MatIdx rowsGamma(0);
 	Mesh::VertexIdxArr adjVerts;
 	CLISTDEF0(MatEntry) rows(0, vertices.size()*4);
