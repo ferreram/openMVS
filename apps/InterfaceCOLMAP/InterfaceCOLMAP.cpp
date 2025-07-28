@@ -296,10 +296,16 @@ struct Camera {
 			return false;
 		ASSERT(ID > 0);
 		--ID;
-		if (model != _T("PINHOLE"))
-			return false;
 		params.resize(4);
-		in >> params[0] >> params[1] >> params[2] >> params[3];
+		if (model == _T("PINHOLE")) {
+			in >> params[0] >> params[1] >> params[2] >> params[3];
+		} 
+		else if (model == _T("SIMPLE_PINHOLE")) {
+			in >> params[0] >> params[2] >> params[3];
+			params[1] = params[0];
+		}
+		else
+			return false;
 		return !in.fail();
 	}
 
@@ -320,10 +326,20 @@ struct Camera {
 		height = (uint32_t)ReadBinaryLittleEndian<uint64_t>(&stream);
 		ASSERT(ID > 0);
 		--ID;
-		if (model != _T("PINHOLE"))
-			return false;
 		params.resize(4);
-		ReadBinaryLittleEndian<double>(&stream, &params);
+		if (model == _T("PINHOLE")) {
+			ReadBinaryLittleEndian<double>(&stream, &params);
+		} 
+		else if (model == _T("SIMPLE_PINHOLE")) {
+			std::vector<REAL> tmp_params(3);
+			ReadBinaryLittleEndian<double>(&stream, &tmp_params);
+			params[0] = tmp_params[0];
+			params[1] = tmp_params[0];
+			params[2] = tmp_params[1];
+			params[3] = tmp_params[2];
+		}
+		else
+			return false;
 		return true;
 	}
 
